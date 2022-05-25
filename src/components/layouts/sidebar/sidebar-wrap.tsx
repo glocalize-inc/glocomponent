@@ -4,6 +4,7 @@ import { useDrag, useDrop } from "react-dnd";
 import { Menu, SubMenu } from "../../../assets/data/menu-list";
 
 import { Collapse, ListItem } from "@material-ui/core";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type DragObject = {
   index: number;
@@ -15,8 +16,8 @@ interface Props {
   moveCard: any;
   setSelected: any;
   open: boolean;
-  main: Menu;
-  sub: SubMenu;
+  main: string;
+  sub: SubMenu[];
   onClick: any;
   icon: any;
   iconInactive: Nullable<any>;
@@ -26,27 +27,26 @@ interface Props {
 }
 
 export default function SideBarWrap(props: Props) {
-  const history = useHistory();
-  const url = window.location.pathname;
+  const navigate = useNavigate();
+  const location = useLocation();
   const [direction, setDirection] = useState("");
-  const ref = useRef(null);
+  const ref = useRef<Nullable<HTMLElement>>(null);
 
   const [, drop] = useDrop({
     accept: "list",
     hover(item: DragObject, monitor) {
-      if (!ref.current) {
-        return;
-      }
+      if (!ref.current) return;
       const dragIndex = item.index;
-      const hoverIndex = index;
+      const hoverIndex = props.index;
       // Don't replace items with themselves
-      if (dragIndex === hoverIndex) {
-        return;
-      }
+      if (dragIndex === hoverIndex) return;
+
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
       const hoverMiddleY =
         (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
       const clientOffset = monitor.getClientOffset();
+      if (clientOffset === null) return;
+
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
         setDirection("downward");
@@ -57,7 +57,7 @@ export default function SideBarWrap(props: Props) {
         setDirection("upward");
         return;
       }
-      moveCard(dragIndex, hoverIndex);
+      props.moveCard(dragIndex, hoverIndex);
 
       item.index = hoverIndex;
     },
@@ -65,8 +65,8 @@ export default function SideBarWrap(props: Props) {
 
   const [{ isDragging }, drag] = useDrag({
     type: "list",
-    item: { type: "list", id, index },
-    canDrag: editMode,
+    item: { type: "list", id: props.id, index: props.index },
+    canDrag: props.editMode,
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -78,21 +78,21 @@ export default function SideBarWrap(props: Props) {
 
   drag(drop(ref));
 
-  const moveToExternalLink = async (e, link, external) => {
+  const moveToExternalLink = async (e, link: string, external: any) => {
     e.preventDefault();
     if (authenticationService.isLogin) {
       if (external) {
         window.open(link, "_self");
       } else {
-        history.push(link);
+        navigate(link);
       }
     } else {
-      history.push("/sign/login");
+      navigate("/sign/login");
     }
   };
 
   useEffect(() => {
-    const currentPage = sub?.filter((item) => item.link === url);
+    const currentPage = props.sub?.filter((item) => item.link === url);
     if (!currentPage?.length) {
       return;
     } else {
