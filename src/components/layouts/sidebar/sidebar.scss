@@ -1,0 +1,614 @@
+//@import "~bootstrap/scss/bootstrap";
+$blue: #1a61f7;
+$white: #fff;
+
+.fl-header .fl-sidenav {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 250px;
+  position: fixed;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+
+  // reset
+  .container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .navbar-brand,
+  .active {
+    .nav-link {
+      padding: 0;
+      color: #111 !important;
+    }
+  }
+  .nav-link .active {
+    color: #111;
+  }
+  .nav-link {
+    padding: 0;
+  }
+  a:hover {
+    text-decoration: none !important;
+  }
+
+  // 불필요한 transition 없앰
+  .collapsing {
+    transition: none;
+  }
+
+  // profile menu 공통
+  @mixin profile {
+    .nav-link {
+      display: flex;
+      align-items: center;
+
+      img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .menu-icon {
+        display: flex;
+        flex-direction: column;
+        // max-width: 150px;
+        word-break: break-all;
+        margin-left: 8px;
+        color: #111;
+
+        .nickname {
+          width: 100%;
+          font-size: 14px;
+        }
+        &.mobile {
+          display: flex;
+          flex-direction: row;
+          gap: 8px;
+          align-items: center;
+          img {
+            width: 22px !important;
+            height: 22px !important;
+          }
+        }
+      }
+      &.dropdown-toggle::after {
+        color: #111;
+      }
+    }
+
+    .qpArea {
+      display: flex;
+      align-items: center;
+      img {
+        width: 18px;
+        height: 18px;
+      }
+      span {
+        color: #888888;
+        font-size: 12px;
+        font-weight: normal;
+        // line-height: 1.5;
+      }
+    }
+
+    .dropdown-item {
+      padding: 11px 8px;
+      color: #aaa;
+      &:hover {
+        background-color: #ddd;
+      }
+    }
+  }
+
+  .profile {
+    @include profile();
+  }
+
+  .nav-link {
+    cursor: pointer;
+    letter-spacing: -0.5px !important;
+  }
+
+  .help-widget {
+    display: none;
+    @media screen and(max-width: 801px) {
+      margin: 0 auto;
+      margin-top: 34px;
+      width: 100%;
+      margin-bottom: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 0;
+      border-radius: 24px;
+      border-style: none;
+      background-color: #235cb9;
+      font-weight: bold;
+      color: #fff;
+      font-size: 18px;
+      img {
+        width: 24px;
+        margin-right: 6px;
+      }
+    }
+  }
+
+  /* sideBarWrap - web */
+  .innerWrap {
+    padding: 12px;
+    padding-bottom: 4px;
+    .nav-item {
+      margin-bottom: 8px;
+    }
+    &.draggingBox:hover {
+      div.nav-item {
+        margin-top: 0 !important;
+      }
+    }
+  }
+
+  .itemWrap {
+    position: relative;
+    &.draggingBox:hover {
+      background-color: #f5f5f5;
+      border-radius: 8px;
+
+      /* 메뉴 드래그 시 위 아래에 보이게 되는 line 디자인
+      기능 매끄럽게 되도록 연구 필요. 그때까진 보류 */
+      //line
+      // &.downward::after {
+      //   content: '';
+      //   position: absolute;
+      //   width: 100%;
+      //   height: 1px;
+      //   background: $blue;
+      //   // top: 100%;
+      //   bottom: 2.5px;
+      //   left: 0;
+      // }
+      // //circle
+      // &.downward::before {
+      //   content: '';
+      //   position: absolute;
+      //   // top: 95%;
+      //   bottom: 0px;
+      //   width: 6px;
+      //   height: 6px;
+      //   background: $blue;
+      //   border-radius: 50%;
+      //   left: 0;
+      // }
+      // //line
+      // &.upward::after {
+      //   content: '';
+      //   position: absolute;
+      //   width: 100%;
+      //   height: 1px;
+      //   background: $blue;
+      //   // top: 100%;
+      //   bottom: 2.5px;
+      //   left: 0;
+      // }
+      // //circle
+      // &.upward::before {
+      //   content: '';
+      //   position: absolute;
+      //   // top: 95%;
+      //   bottom: 0px;
+      //   width: 6px;
+      //   height: 6px;
+      //   background: $blue;
+      //   border-radius: 50%;
+      //   left: 0;
+      // }
+    }
+    .nav-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      .nav-link {
+        span {
+          margin-top: 2px;
+        }
+        &.visibleFalse {
+          span {
+          }
+        }
+      }
+    }
+    .visibilityIcon {
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+    }
+    &.visibleFalse {
+      opacity: 0.3;
+    }
+    .subItem {
+      .MuiButtonBase-root {
+        padding-left: 18px !important;
+      }
+      &.editMode {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      div {
+        &:hover {
+          background-color: none;
+        }
+      }
+
+      &.visibleFalse {
+        opacity: 0.3;
+      }
+    }
+  }
+
+  .customizeBtn {
+    margin: 0 auto;
+    margin-top: 34px;
+    width: 100%;
+    margin: 34px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 18px;
+    border: 1px solid #666;
+    background-color: transparent;
+    font-weight: bold;
+    color: #666;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    img {
+      width: 18px;
+      margin-right: 4px;
+    }
+    &.mobile {
+      padding: 8px;
+      margin-bottom: 16px;
+    }
+  }
+
+  .editBtnContainer {
+    margin-bottom: 34px;
+    button {
+      width: 100%;
+      height: 24px;
+      line-height: 24px;
+      margin-top: 16px;
+    }
+    &.mobile {
+      margin-bottom: 16px;
+      button {
+        height: 32px;
+      }
+    }
+  }
+
+  .editModeBtn {
+    padding: 8px 0;
+    border-radius: 7px;
+    background-color: #eff2f7;
+    display: flex;
+    div {
+      width: 50%;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      img {
+        margin-bottom: 6px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+    .disalbedBtn {
+      opacity: 0.5;
+      cursor: default;
+    }
+  }
+}
+
+.fl-header {
+  // sidebar
+  .sideNav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    .fl-sidenav {
+      .nav-wrap {
+        height: 100vh;
+        padding: 12px 12px 0;
+
+        // logo
+        .navbar-brand {
+          width: 178px;
+          height: 24px;
+          padding: 12px 12px 0;
+          font-size: inherit;
+          cursor: pointer;
+        }
+
+        // div
+        .nav {
+          // 메뉴 활성화했을 때
+          div.nav-item {
+            position: relative;
+            //margin-top: 24px;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 0;
+            &:hover {
+              background-color: transparent;
+            }
+
+            // menu
+            .nav-link {
+              display: flex;
+              align-items: center;
+              margin: 0;
+              padding: 0;
+              font-weight: bold;
+              color: #888888;
+              line-height: 1.5;
+              letter-spacing: 0.25px;
+              img {
+                width: 24px;
+                height: 24px;
+                margin-right: 4px;
+              }
+              &:hover {
+                color: #111;
+              }
+
+              // log out
+              &.log-out {
+                cursor: pointer;
+                font-weight: normal;
+                font-size: 14px;
+                color: #999;
+                margin-bottom: 12px;
+                text-decoration: underline;
+                &:hover {
+                  text-decoration: underline !important;
+                }
+              }
+            }
+            &.profile {
+              margin-top: 24px;
+              padding: 24px 0 24px 12px;
+              border-top: 1px solid #eee;
+              border-bottom: 1px solid #eee;
+
+              .nav-link {
+                cursor: pointer;
+                img {
+                  border-radius: 50%;
+                }
+              }
+            }
+          }
+
+          // Glosub
+          .glosubWrap {
+            .nav-glosub {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 184px;
+              height: 36px;
+              padding: 11px 47px 8px 48px;
+              border-radius: 24px;
+              box-shadow: 0 4px 16px 0 rgba(26, 97, 247, 0.32);
+              background-color: #1a61f7;
+              text-align: center;
+              -webkit-transition: all 0.2s ease;
+              transition: all 0.2s ease;
+              img {
+                width: 89px;
+              }
+              &:hover {
+                -ms-transform: translateY(-3px);
+                -webkit-transform: translateY(-3px);
+                transform: translateY(-3px);
+                background-color: #19449e;
+              }
+            }
+          }
+        }
+
+        // main-menu
+        .accordion {
+          margin-top: 24px;
+          height: 60vh;
+          overflow-y: scroll;
+          margin-bottom: 30 px;
+          &::-webkit-scrollbar {
+            display: none;
+          }
+
+          -ms-overflow-style: none; /* IE and Edge */
+          scrollbar-width: none;
+        }
+      }
+    }
+
+    // sub-menu
+    .sub-nav-container {
+      margin-left: 11px;
+      border-left: 1px solid #eee;
+    }
+    .sub-nav {
+      letter-spacing: 0.5px;
+      &.active {
+        color: #111111;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Mobile Nav
+#mobNavWrap {
+  .sidebar {
+    width: 100%;
+    height: 100%;
+  }
+  .fl-sidenav {
+    width: 100%;
+    .nav-wrap {
+      padding: 0;
+      // logo랑 close btn 감싸는 div
+      .topWrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 16px 14px;
+        background-color: #fff;
+        .navbar-brand {
+          padding: 0;
+          width: auto;
+          height: auto;
+          img {
+            width: 178px;
+            height: auto;
+          }
+        }
+        .closeBtn {
+          padding: 0;
+        }
+      }
+
+      .nav {
+        width: 100%;
+        height: 100%;
+      }
+      div.nav-item.profile {
+        width: 100%;
+        margin-top: 0;
+        padding: 10px 16px;
+        border-color: #d8d8d8;
+        background-color: #fff;
+
+        img {
+          width: 36px;
+          height: 36px;
+        }
+        .menu-icon {
+          font-size: 16px;
+          letter-spacing: -0.24px;
+        }
+      }
+      .menuWrap {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background-color: #f5f5f5;
+
+        .mainMenu {
+          position: relative;
+          width: 50%;
+          height: 100%;
+          background-color: #fff;
+        }
+        .addBoxShadow {
+          box-shadow: 8px 0 32px -24px rgba(0, 0, 0, 0.16);
+        }
+      }
+
+      // 하나의 menu 그룹을 감싸는 div
+      .nav-item {
+        position: relative;
+        width: 100%;
+        height: 56px;
+        margin-top: 0;
+        padding: 16px;
+        border-bottom: 1px solid #eee;
+        &.active {
+          background-color: #f5f5f5;
+        }
+        .nav-link {
+          font-size: 12px;
+          line-height: 1.5;
+          letter-spacing: 0.4px !important;
+          color: #111;
+        }
+      }
+      .MuiCollapse-root,
+      .collapseWrap {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        width: 100%;
+        .sub-item {
+          height: 56px;
+          padding: 16px;
+          border-bottom: 1px solid #ddd;
+          font-size: 12px;
+          line-height: 1.5;
+          letter-spacing: 0.4px;
+          font-weight: normal;
+          color: #111;
+          cursor: pointer;
+          &:hover {
+            color: #111;
+          }
+        }
+      }
+
+      .buttom-menu-container {
+        position: fixed;
+        left: 50%;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        text-decoration: underline;
+        border: none;
+        margin: 16px 0 16px;
+        padding: 0 16px;
+        margin-top: 16px;
+        font-size: 14px;
+        line-height: 1.43;
+        letter-spacing: 0.25px;
+        color: #888;
+        @media screen and(max-height:700px) {
+          flex-direction: row-reverse;
+        }
+      }
+    }
+  }
+
+  // mob
+  .widgetWrap {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 50%;
+    @media screen and(max-width: 960px) {
+      padding: 0 16px;
+    }
+    .help-widget {
+      margin: 16px 0;
+      font-size: 10px;
+      img {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+}
