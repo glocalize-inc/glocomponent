@@ -1,151 +1,153 @@
-import React, { useEffect, useRef } from "react";
-import Collapse from "@material-ui/core/Collapse";
+import React, { useEffect, useMemo, useRef } from "react";
 import "./sidebar.scss";
-import { NavLink, useHistory } from "react-router-dom";
+import Collapse from "@material-ui/core/Collapse";
+import { Menu, SubMenu } from "../../../assets/data/menu-list";
+import { useLocation, useNavigate } from "react-router-dom";
 
-export default function SideBarWrapMobile(
-  {
-    id,
-    propItem,
-    setSelected,
-    open,
-    main,
-    sub,
-    onClick,
-    icon,
-    iconInactive,
-    handleDrawerToggle,
-    editMode,
-    editMenuList,
-  },
-  props
-) {
-  const url = window.location.pathname;
-  const history = useHistory();
+interface Props {
+  id: number;
+  setSelected: any;
+  open: boolean;
+  main: string;
+  sub: SubMenu[];
+  onClick: any;
+  icon: any;
+  iconInactive: Nullable<any>;
+  editMode: boolean;
+  propItem: Menu;
+  editMenuList: any;
+  handleDrawerToggle: any;
+}
 
-  const moveToExternalLink = async (e, link, external) => {
+export default function SideBarWrapMobile(props: Props) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const moveToExternalLink = async (e: any, link: string, external: any) => {
     e.preventDefault();
 
     if (external) {
       window.open(link, "_self");
     } else {
-      history.push(link);
-      if (handleDrawerToggle) {
-        handleDrawerToggle();
+      navigate(link);
+      if (props.handleDrawerToggle) {
+        props.handleDrawerToggle();
       }
     }
   };
 
   useEffect(() => {
-    const currentPage = sub?.filter((item) => item.link === url);
-    if (!currentPage?.length) {
-      return;
-    } else {
-      setSelected();
-    }
-  }, [url]);
+    const currentPage = props.sub.find(
+      (submenu) => submenu.url === location.pathname
+    );
+    if (!currentPage) return;
+    props.setSelected();
+  }, [location.pathname]);
 
+  if (!(props.propItem.visible && props.editMode)) return null;
+  const visible = useMemo(
+    () => !props.propItem?.visible && props.editMode,
+    [props.propItem, props.editMode]
+  );
+  const opacity = useMemo(() => (visible ? 0.3 : 1), [visible]);
   return (
     <div className="itemWrap">
-      {/* Main menu */}
-      {/* item.visible = false인 경우면 editMode = true 일때만 보여주고, 아닌 경우 visible=true만 보여줌 */}
-      {(!propItem?.visible && editMode) || propItem?.visible ? (
-        <div
-          //button
-          onClick={() => {
-            if (editMode) {
-              onClick(0);
-            }
-            open ? onClick(0) : setSelected();
-          }}
-          className={
-            "nav-item" +
-            (open ? " active " : " addBoxShadow ") +
-            (!propItem?.visible && editMode ? " visibleFalse " : null)
+      <div
+        onClick={() => {
+          if (props.editMode) {
+            props.onClick(0);
           }
-        >
-          {sub?.findIndex((i) => i.link === url) !== -1 ? (
-            <span className={"nav-link"}>
-              {icon && (
-                <img
-                  src={icon}
-                  alt=""
-                  style={{ opacity: !propItem?.visible && editMode ? 0.3 : 1 }}
-                />
-              )}
-              <span
-                style={{ opacity: !propItem?.visible && editMode ? 0.3 : 1 }}
-              >
-                {main}
-              </span>
+          props.open ? props.onClick(0) : props.setSelected();
+        }}
+        className={`nav-item ${props.open ? "active" : "addBoxShadow"} ${
+          visible ? "visibleFalse" : ""
+        }`}
+      >
+        {props.sub?.find((submenu) => submenu.url === location.pathname) ? (
+          <span className={"nav-link"}>
+            {props.icon ? (
+              <img
+                src={props.icon}
+                alt=""
+                style={{
+                  opacity,
+                }}
+              />
+            ) : null}
+            <span
+              style={{
+                opacity,
+              }}
+            >
+              {props.main}
             </span>
-          ) : (
-            <span className={"nav-link"}>
-              {iconInactive && (
-                <img
-                  src={iconInactive}
-                  alt=""
-                  style={{ opacity: !propItem?.visible && editMode ? 0.3 : 1 }}
-                />
-              )}
-              <span
-                style={{ opacity: !propItem?.visible && editMode ? 0.3 : 1 }}
-              >
-                {main}
-              </span>
+          </span>
+        ) : (
+          <span className={"nav-link"}>
+            {props.iconInactive ? (
+              <img
+                src={props.iconInactive}
+                alt=""
+                style={{
+                  opacity,
+                }}
+              />
+            ) : null}
+            <span
+              style={{
+                opacity,
+              }}
+            >
+              {props.main}
             </span>
-          )}
+          </span>
+        )}
 
-          {/* edit mode btn */}
-          {!propItem?.visible && editMode ? (
-            <img
-              className="visibilityIcon"
-              src={
-                process.env.PUBLIC_URL + "/assets/img/icon-visibility-off.png"
-              }
-              alt=""
-              onClick={() =>
-                editMenuList({
-                  id: id,
-                  subId: false,
-                  visible: true,
-                  subVisible: false,
-                })
-              }
-            />
-          ) : editMode ? (
-            <img
-              className="visibilityIcon"
-              src={
-                process.env.PUBLIC_URL + "/assets/img/icon-visibility-on.svg"
-              }
-              alt=""
-              onClick={() =>
-                editMenuList({
-                  id: id,
-                  subId: false,
-                  visible: false,
-                  subVisible: false,
-                })
-              }
-            />
-          ) : null}
-        </div>
-      ) : null}
+        {/* edit mode btn */}
+        {visible ? (
+          <img
+            className="visibilityIcon"
+            src={process.env.PUBLIC_URL + "/assets/img/icon-visibility-off.png"}
+            alt=""
+            onClick={() =>
+              props.editMenuList({
+                id: props.id,
+                subId: false,
+                visible: true,
+                subVisible: false,
+              })
+            }
+          />
+        ) : props.editMode ? (
+          <img
+            className="visibilityIcon"
+            src={process.env.PUBLIC_URL + "/assets/img/icon-visibility-on.svg"}
+            alt=""
+            onClick={() =>
+              props.editMenuList({
+                id: props.id,
+                subId: false,
+                visible: false,
+                subVisible: false,
+              })
+            }
+          />
+        ) : null}
+      </div>
       {/* Sub menu */}
-      <Collapse in={open} timeout="auto" unmountOnExit>
+      <Collapse in={props.open} timeout="auto" unmountOnExit>
         <div /* component='div' */>
-          {sub?.map((subItem, index) => {
+          {props.sub?.map((submenu, index) => {
             return (
               <div key={index}>
-                {(!subItem?.visible && editMode) || subItem?.visible ? (
+                {(!submenu?.visible && props.editMode) || submenu?.visible ? (
                   <React.Fragment>
                     <div
                       onClick={(e) => {
-                        if (editMode) {
+                        if (props.editMode) {
                           return;
                         }
-                        moveToExternalLink(e, subItem?.link, subItem?.external);
+                        moveToExternalLink(e, submenu.url, submenu.external);
                       }}
                       className="sub-item"
                     >
@@ -159,16 +161,18 @@ export default function SideBarWrapMobile(
                       >
                         <span
                           className={
-                            "sub-nav " + (url === subItem?.link ? "active" : "")
+                            "sub-nav " +
+                            (location.pathname === submenu.url ? "active" : "")
                           }
                           style={{
-                            opacity: !subItem?.visible && editMode ? 0.3 : 1,
+                            opacity:
+                              !submenu?.visible && props.editMode ? 0.3 : 1,
                           }}
                         >
-                          {subItem?.name}
+                          {submenu.title}
                         </span>
                         {/* edit mode btn */}
-                        {!subItem?.visible && editMode ? (
+                        {!submenu?.visible && props.editMode ? (
                           <img
                             className="visibilityIcon"
                             src={
@@ -177,15 +181,15 @@ export default function SideBarWrapMobile(
                             }
                             alt=""
                             onClick={() =>
-                              editMenuList({
-                                id: id,
-                                subId: subItem?.id,
+                              props.editMenuList({
+                                id: props.id,
+                                subId: submenu.id,
                                 visible: true,
                                 subVisible: true,
                               })
                             }
                           />
-                        ) : editMode ? (
+                        ) : props.editMode ? (
                           <img
                             className="visibilityIcon"
                             src={
@@ -194,9 +198,9 @@ export default function SideBarWrapMobile(
                             }
                             alt=""
                             onClick={() =>
-                              editMenuList({
-                                id: id,
-                                subId: subItem?.id,
+                              props.editMenuList({
+                                id: props.id,
+                                subId: submenu.id,
                                 visible: true,
                                 subVisible: false,
                               })

@@ -134,13 +134,7 @@ function SideBarMobile(props: Props) {
                               setSelected={() => setSelected(menu.id)}
                               open={selected === menu.id}
                               main={menu.title}
-                              sub={menu.sub.map((submenu) => ({
-                                id: submenu.id,
-                                name: submenu.title,
-                                link: submenu.url,
-                                visible: submenu.visible,
-                                external: submenu.external,
-                              }))}
+                              sub={menu.sub}
                               onClick={setSelected}
                               icon={process.env.PUBLIC_URL + menu.icon}
                               iconInactive={process.env.PUBLIC_URL + menu.icon}

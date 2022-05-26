@@ -110,6 +110,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   isFetching: boolean;
+  isLogin: boolean;
   logout: (e: any) => Promise<void>;
   userInfo: UserInfo;
   updateMenu: (menuList: string) => void;
@@ -492,6 +493,7 @@ function Layout(props: Props) {
                   saveEdittedSideBar={() => {
                     return new Promise(() => {});
                   }}
+                  isLogin={props.isLogin}
                 />
               </Drawer>
             </Hidden>
